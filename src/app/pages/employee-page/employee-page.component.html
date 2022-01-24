@@ -1,0 +1,29 @@
+<div id="container" >
+    <div id="header-container">
+        <mat-card-title>Employees</mat-card-title>
+
+        <button (click)="goToCreate()" mat-raised-button color="primary">Nuevo Empleado</button>
+    </div>
+
+    <div id="header-search">
+ 
+        <mat-form-field class="field-container" appearance="fill">
+          <mat-label for="search">Buscar</mat-label>
+          <input matInput id="search" placeholder="Buscar" [(ngModel)]="search"> 
+            </mat-form-field>
+            <button (click)="goToSearch()"  mat-raised-button color="primary">Buscar</button> 
+        </div>
+
+
+    <app-employee-list [dataSourceEmployee]="employees"></app-employee-list>
+
+
+    <div id="header-container">
+        <span>Total empleados: {{this.totalEmployees}}</span>
+        <span>Total Salario:  {{this.totalSalario | currency: 'USD'}}</span>
+
+        <button (click)="goToSave()" mat-raised-button color="primary">Guardar registros</button>
+    </div>
+
+    
+</div>

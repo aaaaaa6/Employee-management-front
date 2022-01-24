@@ -1,0 +1,26 @@
+<mat-toolbar>
+    <div fxShow="true">
+        <button mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+        </button>
+    </div>
+   <span>Employees Management</span>
+   <span class="example-spacer"></span>
+ </mat-toolbar>
+ <mat-sidenav-container fxFlexFill class="example-container">
+
+    <mat-sidenav color="primary" #sidenav fxLayout="column" mode="over"  opened="false">
+      <div fxLayout="column">
+        <a mat-button routerLink="/login">Login</a>
+      </div>
+      <div fxLayout="column">
+        <a mat-button routerLink="/employees">Employees</a>
+      </div>
+    </mat-sidenav>
+    <mat-sidenav-content fxFlexFill>
+        <router-outlet></router-outlet>
+        <app-load-spinner></app-load-spinner>
+    </mat-sidenav-content>
+   
+  </mat-sidenav-container>
+

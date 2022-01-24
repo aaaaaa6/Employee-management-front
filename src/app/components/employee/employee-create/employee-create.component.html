@@ -1,0 +1,57 @@
+<div id="container">
+    <mat-card-title>Crear Empleado</mat-card-title>
+        <mat-card >
+          <form [formGroup]="employeeForm">
+            <div id="form-container">
+            <div class="form-column">
+
+            <mat-form-field class="field-container" appearance="fill">
+              <mat-label for="cedula">Cedula</mat-label>
+              <input matInput id="cedula" placeholder="Cedula"formControlName="cedula" required>
+            </mat-form-field>
+
+            <mat-form-field class="field-container" appearance="fill">
+                <mat-label>Sexo</mat-label>
+                <mat-select formControlName="sexo">
+                  <mat-option value="M">Masculino</mat-option>
+                  <mat-option value="F">Femenino</mat-option>
+                </mat-select>
+              </mat-form-field>
+            
+
+              <mat-form-field class="field-container" appearance="fill">
+                <mat-label for="salario">Salario</mat-label>
+                <input matInput id="salario" placeholder="Salario"formControlName="salario" required>
+              </mat-form-field>
+      
+            
+          </div>
+          <div class="form-column">
+
+            <mat-form-field class="field-container" appearance="fill">
+                <mat-label for="nombre">Nombre Completo</mat-label>
+                <input matInput id="nombre" placeholder="Nombre Completo"formControlName="nombre" required>
+              </mat-form-field>
+
+              <mat-form-field class="field-container" appearance="fill">
+                <mat-label for="fechaNacimiento">Fecha Nacimiento</mat-label>
+                <input matInput [matDatepicker]="picker" id="fechaNacimiento" placeholder="Fecha Nacimiento"formControlName="fechaNacimiento" required>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field class="field-container" appearance="fill">
+                <mat-label>Vacuna covid</mat-label>
+                <mat-select formControlName="vacuna">
+                  <mat-option  value="true">SI</mat-option>
+                  <mat-option  value="false">NO</mat-option>
+                </mat-select>
+              </mat-form-field>
+            
+          </div>
+
+            </div>
+            <button (click)="createEmployee()" mat-raised-button color="primary">Create</button>
+          </form>
+      </mat-card>   
+</div>
