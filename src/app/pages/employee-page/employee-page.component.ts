@@ -26,7 +26,11 @@ export class EmployeePageComponent implements OnInit {
       if(result){
         this.employees = result;
 
-        console.log(this.employees)
+        this.employees.map(function(dato){
+          if(dato){
+            dato.edad = calculoEdad(dato.fechaNacimiento)
+          }
+        });
 
         this.totalSalario = this.employees.reduce((acc,obj,) => 
                             acc + (obj.salario ),0);
@@ -44,13 +48,16 @@ export class EmployeePageComponent implements OnInit {
 
   goToSave(){
     
-    console.log(this.search)
-
+    
     this.employeeUseCase.createEmployees(this.employees).subscribe((result) => {
       console.log(result)
       if(result){
-        this.employees = result;
-        //console.log(this)
+
+        this.employees.map(function(dato){
+          if(dato){
+            dato.edad = calculoEdad(dato.fechaNacimiento)
+          }
+        });
       }
     });
 
@@ -64,6 +71,12 @@ export class EmployeePageComponent implements OnInit {
       console.log(result)
       if(result){
         this.employees = result;
+
+        this.employees.map(function(dato){
+          if(dato){
+            dato.edad = calculoEdad(dato.fechaNacimiento)
+          }
+        });
         
         this.totalSalario = this.employees.reduce((acc,obj,) => 
                             acc + (obj.salario ),0);
@@ -76,4 +89,37 @@ export class EmployeePageComponent implements OnInit {
     });
   }
 
+}
+
+function calculoEdad(fechaNacimiento: Date): string {
+  var hoy = new Date();
+    var cumpleanos = new Date(fechaNacimiento);
+
+    //Calculamos años
+    var edad = hoy.getFullYear() - cumpleanos.getFullYear();
+    var m = hoy.getMonth() - cumpleanos.getMonth();
+    if (m < 0 || (m === 0 && hoy.getDate() < cumpleanos.getDate())) {
+        edad--;
+    }
+    // calculamos los meses
+    var meses=0;
+    if(hoy.getMonth()>cumpleanos.getMonth()){
+        meses=hoy.getMonth()-cumpleanos.getMonth();
+    }else if(hoy.getMonth()<cumpleanos.getMonth()){
+        meses=12-(cumpleanos.getMonth()-hoy.getMonth());
+    }else if(hoy.getMonth()==cumpleanos.getMonth() && hoy.getDate()>cumpleanos.getDate() ){
+        if(hoy.getMonth()-cumpleanos.getMonth()==0){
+            meses=0;
+        }else{
+            meses=11;
+        }     
+    }
+    // Obtener días: día actual - día de cumpleaños
+    let dias  = hoy.getDate() - cumpleanos.getDate();
+    if(dias < 0) {
+        meses = (meses - 1 < 0) ? 11 : meses - 1;
+        dias = 30 + dias;
+    }
+
+    return (`${edad} años, ${meses} meses, ${dias} días`);
 }
