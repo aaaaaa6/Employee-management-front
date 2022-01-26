@@ -1,7 +1,7 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit, EventEmitter, Output, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map, Observable } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 import { Employee } from 'src/app/core/models/employee';
 import { EmployeeUseCase } from 'src/app/core/useCase/employeeUseCase';
 
@@ -18,7 +18,6 @@ export class EmployeeListComponent implements OnInit {
 
   @Input() set dataSourceEmployee(DataEmployee: Employee[]){
     this.dataSource.data = DataEmployee
-    console.log(this.rowTableEmployee)
   }
 
    //@Input() dataSourceEmployee:Employee[]=[];
@@ -26,7 +25,15 @@ export class EmployeeListComponent implements OnInit {
   state$!: Observable<object>;
   rowTableEmployee: Employee[] =[];
   dataSource = new MatTableDataSource<Employee>([]);
+
+
   newRowEmployee!: Employee;
+
+  totalSalario : number = 0;
+  totalEmployees: number = 0;
+  @Output() accionTotalSalario = new EventEmitter<number>();
+  @Output() accionTotalEmployees = new EventEmitter<number>();
+  @Output() accionNewEmployees = new EventEmitter<Employee>();
   
   constructor(public activatedRoute: ActivatedRoute
               ,private router: Router
@@ -38,28 +45,30 @@ export class EmployeeListComponent implements OnInit {
     this.state$ = this.activatedRoute.paramMap
     .pipe(map(()=>window.history.state))
 
+
     this.state$.subscribe((result)=>{
       if(result){
 
         this.newRowEmployee = result as Employee
-        
-        const newRow: Employee ={
-          id:0,
-          cedula: this.newRowEmployee.cedula,
-          nombre: this.newRowEmployee.nombre,
-          sexo: this.newRowEmployee.sexo,
-          fechaNacimiento: this.newRowEmployee.fechaNacimiento,
-          edad: this.newRowEmployee.edad,
-          salario: this.newRowEmployee.salario,
-          vacuna: this.newRowEmployee.vacuna,
-        }
-        
 
-        console.log(newRow)
-        this.rowTableEmployee.push(newRow)
-        //this.dataSourceEmployee.push(newRow);
-        this.dataSource.data = this.rowTableEmployee
-        console.log(this.rowTableEmployee)
+        if(this.newRowEmployee.cedula){
+          const newRow: Employee ={
+            id:0,
+            cedula: this.newRowEmployee.cedula,
+            nombre: this.newRowEmployee.nombre,
+            sexo: this.newRowEmployee.sexo,
+            fechaNacimiento: this.newRowEmployee.fechaNacimiento,
+            edad: this.newRowEmployee.edad,
+            salario: this.newRowEmployee.salario,
+            vacuna: this.newRowEmployee.vacuna,
+          }
+         
+   
+          this.accionNewEmployees.emit(newRow);
+
+          this.dataSource = new MatTableDataSource<Employee>(this.rowTableEmployee);
+
+        }  
       }
     })
 
@@ -68,7 +77,7 @@ export class EmployeeListComponent implements OnInit {
   editEmployee(employee :Employee){
     console.log(employee);
 
-    this.router.navigateByUrl('/employee-edit', { state: employee });
+    this.router.navigate(['/employee-edit'], { state: employee });
 
   }
 
@@ -77,11 +86,22 @@ export class EmployeeListComponent implements OnInit {
     this.employeeUseCase.deleteEmployee(employee.id).subscribe((result) => {
       console.log(result)
       if(result){
+
+        this.dataSource.data.splice(this.dataSource.data.indexOf(employee),1)
+        this.dataSource.data = this.dataSource.data
+    
+        this.totalSalario = this.dataSource.data.reduce((acc,obj,) => 
+                                acc + (obj.salario ),0);
+
+        this.totalEmployees =  this.dataSource.data.length;
+        
+        this.accionTotalSalario.emit(this.totalSalario);
+        this.accionTotalEmployees.emit(this.totalEmployees);
+
       }
     });
 
-    this.dataSource.data.splice(this.dataSource.data.indexOf(employee),1)
-    this.dataSource.data = this.dataSource.data
+    
 
   }
 

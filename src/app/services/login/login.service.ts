@@ -18,6 +18,14 @@ export class LoginService {
   constructor(private http: HttpClient) { }
 
 
+  public login(login: string, pass:string): Observable<any> {
+    const body ={login,pass }
+    console.log(body)
+    return this.http.post<any>(this.url + '/login?credenciales='+login+','+pass, httpOptions).pipe(catchError(err => of(err)));
+  }
+
+
+
   public getPermissionsByRole(role: number): Observable<any> {
     return this.http.post<any>(this.url + '/GetPermissionsByRole?roleId='+ role , httpOptions).pipe(catchError(err => of(err)));
   }

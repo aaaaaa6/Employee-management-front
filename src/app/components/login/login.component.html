@@ -5,19 +5,19 @@
   <p>
     <mat-form-field class="field-container" appearance="fill">
       <mat-label for="username">Username</mat-label>
-      <input id="username" matInput placeholder="Username" formControlName="username">
+      <input id="username" matInput placeholder="Username" formControlName="username" required>
     </mat-form-field>
   </p>
 
   <p>
     <mat-form-field class="field-container" appearance="fill">
       <mat-label for="password">Password</mat-label>
-      <input id="password" type="password" matInput placeholder="Password" formControlName="password">
+      <input id="password" type="password" matInput placeholder="Password" formControlName="password" required>
     </mat-form-field>
   </p>
 
-  <p *ngIf="error" class="error">
-    {{ error }}
+  <p *ngIf="invalidLogin" class="error">
+    Invalid username or password.
   </p>
 
   <div class="button">

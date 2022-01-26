@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Employee } from 'src/app/core/models/employee';
 import { EmployeeUseCase } from 'src/app/core/useCase/employeeUseCase';
@@ -13,19 +13,27 @@ import { EmployeeUseCase } from 'src/app/core/useCase/employeeUseCase';
 export class EmployeePageComponent implements OnInit {
 
   employees: Employee[] = [];
+  newEmployees: Employee[] = [];
   search: string = ''
   totalEmployees: number = 0;
   totalSalario:number=0;
 
   constructor(private router: Router,
-              private employeeUseCase :EmployeeUseCase) { }
+              private employeeUseCase :EmployeeUseCase,
+              private changeDetectorRefs: ChangeDetectorRef) { }
 
   ngOnInit(): void {
+    
+    this.rowsInit();
+
+  }
+
+  rowsInit(){
+
     this.employeeUseCase.get().subscribe((result) => {
-      console.log(result)
       if(result){
         this.employees = result;
-
+      
         this.employees.map(function(dato){
           if(dato){
             dato.edad = calculoEdad(dato.fechaNacimiento)
@@ -34,7 +42,6 @@ export class EmployeePageComponent implements OnInit {
 
         this.totalSalario = this.employees.reduce((acc,obj,) => 
                             acc + (obj.salario ),0);
-
 
         this.totalEmployees =  this.employees.length;
 
@@ -81,17 +88,30 @@ export class EmployeePageComponent implements OnInit {
         this.totalSalario = this.employees.reduce((acc,obj,) => 
                             acc + (obj.salario ),0);
 
-
         this.totalEmployees =  this.employees.length;
-
 
       }
     });
   }
 
+  executeTotalSalario(salario: number){
+      this.totalSalario = salario
+  }
+
+  executeTotalEmployees(employes: number){
+    this.totalEmployees = employes;
+  }
+
+  executeNewEmployees(newEmploye: Employee){
+    this.newEmployees.push(newEmploye)
+    console.log(this.employees);
+    console.log(this.newEmployees);
+    this.changeDetectorRefs.detectChanges();
+  }
+
 }
 
-function calculoEdad(fechaNacimiento: Date): string {
+function calculoEdad(fechaNacimiento: string): string {
   var hoy = new Date();
     var cumpleanos = new Date(fechaNacimiento);
 

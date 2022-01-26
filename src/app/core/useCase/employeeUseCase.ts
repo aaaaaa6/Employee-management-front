@@ -34,9 +34,13 @@ export class EmployeeUseCase
         return this.services.deleteEmployees(id);
     }
 
-    public editEmployees(id: number, employee: Employee ) {
+    public editEmployees(employee: Employee ) {
        
-        return this.services.editEmployees(id,employee );
+        return this.services.editEmployees(employee);
+    }
+
+    public ValidateEmployees() {
+        return true
     }
 
 }

@@ -4,11 +4,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Employee} from '../../../core/models/employee'
 import {  Observable } from 'rxjs';
 import { EmployeeUseCase } from 'src/app/core/useCase/employeeUseCase';
+import * as moment from 'moment';
+
+
 
 @Component({
   selector: 'app-employee-create',
   templateUrl: './employee-create.component.html',
-  styleUrls: ['./employee-create.component.css']
+  styleUrls: ['./employee-create.component.css'],
 })
 export class EmployeeCreateComponent implements OnInit {
 
@@ -28,9 +31,9 @@ export class EmployeeCreateComponent implements OnInit {
         cedula:'',
         nombre:'',
         sexo:'',
-        fechaNacimiento:'',
-        salario:'',
-        vacuna:false,
+        fechaNacimiento: new Date(),
+        salario: 0,
+        vacuna:'',
       });
   }
 
@@ -54,15 +57,21 @@ export class EmployeeCreateComponent implements OnInit {
 
   createEmployee(){
 
+    
+
+    if(this.validate()){
+
+    const fechaNacimiento = moment(this.employeeForm.value.fechaNacimiento).format('YYYY-MM-DD');
+  
     this.newEmployee = {
       id:0,
       cedula: this.employeeForm.value.cedula,
       nombre: this.employeeForm.value.nombre,
       sexo: this.employeeForm.value.sexo,
-      fechaNacimiento: this.employeeForm.value.fechaNacimiento,
-      edad: calculoEdad(this.employeeForm.value.fechaNacimiento),
-      salario: this.employeeForm.value.salario,
-      vacuna: this.employeeForm.value.vacuna,
+      fechaNacimiento: fechaNacimiento,
+      edad: calculoEdad(fechaNacimiento),
+      salario: +this.employeeForm.value.salario,
+      vacuna: this.employeeForm.value.vacuna
     }
 
     this.employeeUseCase.create(this.newEmployee).subscribe((resut)=>{
@@ -70,27 +79,51 @@ export class EmployeeCreateComponent implements OnInit {
         alert('Your request was successfully created')
 
         let resq = {
-          id:this.employeeForm.value.id,
+          id: +this.employeeForm.value.id,
           cedula: this.employeeForm.value.cedula,
           nombre: this.employeeForm.value.nombre,
           sexo: this.employeeForm.value.sexo,
-          fechaNacimiento: this.employeeForm.value.fechaNacimiento,
-          edad: calculoEdad(this.employeeForm.value.fechaNacimiento),
-          salario: this.employeeForm.value.salario,
+          fechaNacimiento: fechaNacimiento,
+          edad: calculoEdad(fechaNacimiento),
+          salario: +this.employeeForm.value.salario,
           vacuna: this.employeeForm.value.vacuna,
         }
 
-        this.router.navigateByUrl('/employees', { state: resq });
+         this.router.navigate(['/employees'], { state: this.newEmployee });
+        
+         //this.router.navigateByUrl('/employees', { state: this.newEmployee });
 
       }
     })
       
-  
+    }
+  }
+
+  validate(){
+   
+    const fechaNacimiento = moment(this.employeeForm.value.fechaNacimiento).format('YYYY-MM-DD');
+    var hoy = new Date();
+    var cumpleanos = new Date(fechaNacimiento);
+
+    //Calculamos años
+    var edad = hoy.getFullYear() - cumpleanos.getFullYear();
+    var m = hoy.getMonth() - cumpleanos.getMonth();
+    if (m < 0 || (m === 0 && hoy.getDate() < cumpleanos.getDate())) {
+        edad--;
+    }
+
+    if(edad < 18){
+        alert('Employee must be over 18 years old')
+        return false;
+    }
+
+    return true;
+    
   }
 
 }
 
-function calculoEdad(fechaNacimiento: Date): string {
+function calculoEdad(fechaNacimiento: string): string {
   var hoy = new Date();
     var cumpleanos = new Date(fechaNacimiento);
 

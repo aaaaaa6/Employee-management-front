@@ -15,7 +15,12 @@
         </div>
 
 
-    <app-employee-list [dataSourceEmployee]="employees"></app-employee-list>
+    <app-employee-list [dataSourceEmployee]="employees" 
+                        (accionTotalSalario)="executeTotalSalario($event)" 
+                        (accionTotalEmployees)="executeTotalEmployees($event)"
+                        (accionNewEmployees)="executeNewEmployees($event)"
+                        
+                        ></app-employee-list>
 
 
     <div id="header-container">

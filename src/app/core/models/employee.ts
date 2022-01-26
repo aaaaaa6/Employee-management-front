@@ -3,7 +3,7 @@ export class Employee {
     cedula!: string;
     nombre!:string;
     sexo!:string;
-	fechaNacimiento!: Date ;
+	fechaNacimiento!: string ;
     edad!:string;
 	salario!: number;
 	vacuna!: boolean;

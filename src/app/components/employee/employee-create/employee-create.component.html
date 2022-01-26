@@ -6,8 +6,8 @@
             <div class="form-column">
 
             <mat-form-field class="field-container" appearance="fill">
-              <mat-label for="cedula">Cedula</mat-label>
-              <input matInput id="cedula" placeholder="Cedula"formControlName="cedula" required>
+              <mat-label for="cedula">Cédula</mat-label>
+              <input matInput id="cedula" placeholder="Cédula"formControlName="cedula" required>
             </mat-form-field>
 
             <mat-form-field class="field-container" appearance="fill">
@@ -35,7 +35,7 @@
 
               <mat-form-field class="field-container" appearance="fill">
                 <mat-label for="fechaNacimiento">Fecha Nacimiento</mat-label>
-                <input matInput [matDatepicker]="picker" id="fechaNacimiento" placeholder="Fecha Nacimiento"formControlName="fechaNacimiento" required>
+                <input readonly  matInput [matDatepicker]="picker" id="fechaNacimiento" placeholder="Fecha Nacimiento"formControlName="fechaNacimiento" required>
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
@@ -43,8 +43,8 @@
               <mat-form-field class="field-container" appearance="fill">
                 <mat-label>Vacuna covid</mat-label>
                 <mat-select formControlName="vacuna">
-                  <mat-option  value="true">SI</mat-option>
-                  <mat-option  value="false">NO</mat-option>
+                  <mat-option  [value]="true">SI</mat-option>
+                  <mat-option  [value]="false">NO</mat-option>
                 </mat-select>
               </mat-form-field>
             

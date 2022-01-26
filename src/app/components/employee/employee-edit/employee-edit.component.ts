@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Employee} from '../../../core/models/employee'
 import {  map, Observable } from 'rxjs';
 import { EmployeeUseCase } from 'src/app/core/useCase/employeeUseCase';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-employee-edit',
@@ -29,9 +30,9 @@ export class EmployeeEditComponent implements OnInit {
         cedula:'',
         nombre:'',
         sexo:'',
-        fechaNacimiento:'',
-        salario:'',
-        vacuna:false,
+        fechaNacimiento:Date,
+        salario:0,
+        vacuna:'',
       });
   }
 
@@ -56,41 +57,70 @@ export class EmployeeEditComponent implements OnInit {
 
   editClient(){
 
+    if(this.validate()){
+
+    const fechaNacimiento = moment(this.employeeForm.value.fechaNacimiento).format('YYYY-MM-DD');
+
     this.newEmployee = {
       id:this.employeeForm.value.id,
       cedula: this.employeeForm.value.cedula,
       nombre: this.employeeForm.value.nombre,
       sexo: this.employeeForm.value.sexo,
-      fechaNacimiento: this.employeeForm.value.fechaNacimiento,
-      edad: calculoEdad(this.employeeForm.value.fechaNacimiento),
-      salario: this.employeeForm.value.salario,
+      fechaNacimiento: fechaNacimiento,
+      edad: calculoEdad(fechaNacimiento),
+      salario: +this.employeeForm.value.salario,
       vacuna: this.employeeForm.value.vacuna,
     }
 
-    this.employeeUseCase.editEmployees(this.newEmployee.id,this.newEmployee).subscribe((resut)=>{
+    this.employeeUseCase.editEmployees(this.newEmployee).subscribe((resut)=>{
+      console.log(resut)
       if(resut){
         alert('Your request was successfully edited')
 
         let resq = {
-          id:this.employeeForm.value.id,
+          id: + this.employeeForm.value.id,
           cedula: this.employeeForm.value.cedula,
           nombre: this.employeeForm.value.nombre,
           sexo: this.employeeForm.value.sexo,
-          fechaNacimiento: this.employeeForm.value.fechaNacimiento,
-          edad: calculoEdad(this.employeeForm.value.fechaNacimiento),
-          salario: this.employeeForm.value.salario,
+          fechaNacimiento: fechaNacimiento,
+          edad: calculoEdad(fechaNacimiento),
+          salario: +this.employeeForm.value.salario,
           vacuna: this.employeeForm.value.vacuna,
         }
 
         this.router.navigateByUrl('/employees', { state: resq });
       }
-    })      
-  
+    })  ; 
+
+    }
+  }
+
+  validate(){
+   
+    const fechaNacimiento = moment(this.employeeForm.value.fechaNacimiento).format('YYYY-MM-DD');
+    var hoy = new Date();
+    var cumpleanos = new Date(fechaNacimiento);
+
+    //Calculamos años
+    var edad = hoy.getFullYear() - cumpleanos.getFullYear();
+    var m = hoy.getMonth() - cumpleanos.getMonth();
+    if (m < 0 || (m === 0 && hoy.getDate() < cumpleanos.getDate())) {
+        edad--;
+    }
+
+    if(edad < 18){
+        alert('Employee must be over 18 years old')
+        return false;
+    }
+
+    return true;
+    
   }
 
 }
 
-function calculoEdad(fechaNacimiento: Date): string {
+
+function calculoEdad(fechaNacimiento: string): string {
   var hoy = new Date();
     var cumpleanos = new Date(fechaNacimiento);
 

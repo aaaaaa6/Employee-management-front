@@ -20,4 +20,9 @@ export class LoginUseCase
         return this.services.getRoleByUser(login, pass);
     }
 
+    public login(login: string, pass: string) {
+       
+        return this.services.login(login, pass);
+    }
+
 }

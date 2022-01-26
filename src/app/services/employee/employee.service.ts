@@ -23,10 +23,12 @@ export class EmployeeService {
   }
 
   public create(employee: Employee): Observable<any> {
+    console.log(employee)
     return this.http.post<any>(this.url + '/InsertEmployee', employee, httpOptions).pipe(catchError(err => of(err)));
   }
 
   public createEmployees(employee: Employee[]): Observable<any> {
+    console.log(employee)
     return this.http.post<any>(this.url + '/InsertEmployees', employee, httpOptions).pipe(catchError(err => of(err)));
   }
 
@@ -38,9 +40,9 @@ export class EmployeeService {
     return this.http.delete<any>(this.url + '/'+id).pipe(catchError(err => of(err)));
   }
 
-  public editEmployees(id: number, employee: Employee ): Observable<any> {
-    return this.http.put<any>(this.url + '/PutEmployee?id='+id, employee).pipe(catchError(err => of(err)));
+  public editEmployees(employee: Employee ): Observable<any> {
+    console.log(employee)
+    return this.http.put<any>(this.url + '/PutEmployee', employee).pipe(catchError(err => of(err)));
   }
-
 
 }
